@@ -104,6 +104,9 @@
   .card p{margin:0;color:var(--tobacco);font-size:16px;line-height:1.54;}
   .card .go{margin-top:auto;padding-top:20px;font-family:"Cinzel",serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);display:inline-flex;gap:9px;}
   .card .go::after{content:"→";transition:transform .2s;}
+  .all-articles{text-align:center;margin:34px 0 0;}
+  .all-articles a{font-family:"Cinzel",serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:3px;transition:color .2s,border-color .2s;}
+  .all-articles a:hover{color:var(--ember);border-color:var(--ember);}
   .card:hover{background:var(--paper-2);}
   .card:hover .go::after{transform:translateX(5px);}
 
@@ -175,7 +178,7 @@
   <div class="mh">
     <div class="mh-top">
       <span>Est. 2026</span>
-      <nav><a href="#start">Start here</a><a href="#who">Who</a><a href="#follow">Follow</a></nav>
+      <nav><a href="#start">Start here</a><a href="articles.html">All articles</a><a href="#who">Who</a><a href="#follow">Follow</a></nav>
       <span>Enjoyed Occasionally</span>
     </div>
     <a class="mh-name" href="#top">Hours to Burn</a>
@@ -246,6 +249,7 @@
           </div>
         </a>
       </div>
+      <p class="all-articles"><a href="articles.html">All articles</a></p>
     </section>
   </div>
 
