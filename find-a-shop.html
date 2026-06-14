@@ -180,9 +180,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 (function(){
+  var HERE_KEY = "0d5xe-cgbdWZnidojY2yZGBbkoboY5Vvp8CECVvFCHc";
   var map = L.map('map', {scrollWheelZoom:false}).setView([39.5,-98.35], 4);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom:19, attribution:'&copy; OpenStreetMap contributors'
+    maxZoom:19, attribution:'&copy; OpenStreetMap contributors · Search by HERE'
   }).addTo(map);
 
   var shopMarkers=[], userMarker=null;
@@ -202,33 +203,33 @@
     map.setView([lat,lng], 12);
     setStatus("Looking for shops nearby...");
     gmaps.href=gmapsSearch(lat,lng); gmaps.style.display='inline-block';
-    var q="[out:json][timeout:25];("
-      +'node["shop"="tobacco"](around:12000,'+lat+','+lng+');'
-      +'way["shop"="tobacco"](around:12000,'+lat+','+lng+');'
-      +'node["name"~"cigar",i](around:12000,'+lat+','+lng+');'
-      +'way["name"~"cigar",i](around:12000,'+lat+','+lng+');'
-      +");out center 60;";
-    fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q})
+    var url="https://discover.search.hereapi.com/v1/discover?at="+lat+","+lng
+      +"&limit=30&lang=en&q=cigar&apiKey="+HERE_KEY;
+    fetch(url)
       .then(function(r){return r.json();})
       .then(function(data){
         clearShops();
-        var seen={}, n=0;
-        (data.elements||[]).forEach(function(el){
-          var la = el.lat!=null?el.lat:(el.center&&el.center.lat);
-          var lo = el.lon!=null?el.lon:(el.center&&el.center.lon);
-          if(la==null||lo==null) return;
-          var name = (el.tags&&el.tags.name)||'Tobacconist';
-          var key = name+la.toFixed(4)+lo.toFixed(4);
-          if(seen[key]) return; seen[key]=1;
+        var items=data.items||[], n=0, bounds=[[lat,lng]];
+        items.forEach(function(it){
+          var pos=it.position; if(!pos) return;
+          var la=pos.lat, lo=pos.lng;
+          var name=it.title||'Cigar shop';
+          var addr=(it.address&&it.address.label)||'';
+          var miles=it.distance!=null?(it.distance/1609.34).toFixed(1)+" mi away":'';
           var dir="https://www.google.com/maps/dir/?api=1&destination="+la+","+lo;
+          var html="<strong>"+esc(name)+"</strong>"
+            +(addr?"<br>"+esc(addr):"")
+            +(miles?"<br><em>"+esc(miles)+"</em>":"")
+            +"<br><a href='"+dir+"' target='_blank' rel='noopener'>Directions</a>";
           var mk=L.circleMarker([la,lo],{radius:7,color:'#9E3A15',weight:2,fillColor:'#C44D1F',fillOpacity:.85})
-            .addTo(map).bindPopup("<strong>"+esc(name)+"</strong><br><a href='"+dir+"' target='_blank' rel='noopener'>Directions</a>");
-          shopMarkers.push(mk); n++;
+            .addTo(map).bindPopup(html);
+          shopMarkers.push(mk); bounds.push([la,lo]); n++;
         });
+        if(n>1){ map.fitBounds(bounds,{padding:[40,40],maxZoom:14}); }
         setStatus(n? ("Found "+n+" nearby. Tap a marker for details and directions.")
-                   : "Nothing tagged nearby in the open map data. Try the Google Maps button for the full list.");
+                   : "No cigar shops or lounges found nearby. Try the Google Maps button for the full list.");
       })
-      .catch(function(){ setStatus("Could not load the open map data right now. Use the Google Maps button for the full list."); });
+      .catch(function(){ setStatus("Could not load shops right now. Use the Google Maps button for the full list."); });
   }
 
   document.getElementById('locate').addEventListener('click', function(){
@@ -245,11 +246,12 @@
     var q=document.getElementById('city').value.trim();
     if(!q) return;
     setStatus("Finding that place...");
-    fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q))
+    fetch("https://geocode.search.hereapi.com/v1/geocode?lang=en&q="+encodeURIComponent(q)+"&apiKey="+HERE_KEY)
       .then(function(r){return r.json();})
       .then(function(d){
-        if(!d.length){ setStatus("Could not find that place. Try a city and state."); return; }
-        var lat=parseFloat(d[0].lat), lng=parseFloat(d[0].lon);
+        var it=(d.items||[])[0];
+        if(!it||!it.position){ setStatus("Could not find that place. Try a city and state."); return; }
+        var lat=it.position.lat, lng=it.position.lng;
         placeUser(lat,lng); findShops(lat,lng);
       })
       .catch(function(){ setStatus("Search failed. Try again in a moment."); });
