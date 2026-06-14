@@ -43,10 +43,11 @@ When in doubt, write less, and keep the parts that are specific and true.
    - the category line: `<span class="cat">The how-to</span>` (use the right category)
    - the headline: `<h1>New Title</h1>`
    - the dek: `<p class="dek">one plain sentence</p>`
-   - the byline date: `<span>Month Year</span>` (e.g. `June 2026`)
+   - the byline date: `<span>Month Year</span>` (e.g. `June 2026`). Date each post with the month and year it is published. Once a post is published, never re-date it; published dates are permanent.
    - the body inside `<div class="prose"> ... </div>` (keep the final `<p class="end">◆</p>`)
    - the footer tag: `<span class="tag">Hours to Burn · The how-to</span>`
    - Leave the byline `<img>` and the footer seal `<img>` untouched. They are the embedded portrait and monogram.
+   - Leave the founding line alone: the masthead top bar and the footer colophon both read `Est. 2026` (plain digits, not Roman numerals like `MMXXVI`). It is the same on every page and never changes per post.
 3. In the prose, the first paragraph automatically gets a drop cap. Just write normal `<p>` paragraphs.
 4. Add a card for the post in `index.html`, inside `<div class="cards">`. Copy an existing `<a class="card" ...>` block, point its `href` at the new file, and set the category, `<h3>` title, and one-sentence blurb.
 5. Add a natural cross-link if a related post exists. Link a meaningful phrase in the prose using `<a href="other-post.html">phrase</a>`, not a whole sentence. Prose links are already styled.
