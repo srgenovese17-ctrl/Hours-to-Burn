@@ -203,11 +203,9 @@
     setStatus("Looking for shops nearby...");
     gmaps.href=gmapsSearch(lat,lng); gmaps.style.display='inline-block';
     var q="[out:json][timeout:25];("
-      +'node["shop"="tobacco"](around:12000,'+lat+','+lng+');'
-      +'way["shop"="tobacco"](around:12000,'+lat+','+lng+');'
-      +'node["name"~"cigar",i](around:12000,'+lat+','+lng+');'
-      +'way["name"~"cigar",i](around:12000,'+lat+','+lng+');'
-      +");out center 60;";
+      +'node["shop"="tobacco"](around:15000,'+lat+','+lng+');'
+      +'way["shop"="tobacco"](around:15000,'+lat+','+lng+');'
+      +");out center;";
     fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:q})
       .then(function(r){return r.json();})
       .then(function(data){
