@@ -40,6 +40,11 @@
   .mh-top{display:flex;align-items:center;justify-content:space-between;font-family:"Cinzel",serif;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-li);}
   .mh-top a{color:rgba(243,234,212,.82);text-decoration:none;transition:color .2s;}
   .mh-top a:hover{color:var(--brass-li);}
+  /* floating back-to-articles button */
+  .back-float{position:fixed;left:24px;bottom:24px;z-index:50;display:inline-flex;align-items:center;gap:9px;background:var(--green);color:var(--brass-li);border:1.5px solid var(--brass);border-radius:999px;padding:11px 20px;font-family:"Cinzel",serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.28);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .3s ease,transform .3s ease,color .2s,background .2s;}
+  .back-float.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .back-float:hover{background:var(--brass);color:var(--green);}
+  @media (max-width:640px){.back-float{left:16px;bottom:16px;padding:10px 16px;font-size:10px;}}
   .mh-name{display:block;text-align:center;font-family:"Cinzel",serif;font-weight:600;font-size:clamp(26px,5vw,46px);letter-spacing:.06em;line-height:1;margin:12px 0 0;color:#F3EAD4;text-decoration:none;}
   .mh-rule{height:0;border-top:1px solid rgba(220,192,122,.5);margin:12px 0 0;}
 
@@ -105,6 +110,8 @@
   </div>
 </header>
 
+<a class="back-float" href="articles.html" aria-label="Back to articles">← Back to articles</a>
+
 <main>
   <div class="wrap">
     <article>
@@ -149,5 +156,14 @@
   </div>
 </footer>
 
+<script>
+  (function(){
+    var btn=document.querySelector('.back-float');
+    if(!btn)return;
+    function onScroll(){btn.classList.toggle('show',window.scrollY>320);}
+    window.addEventListener('scroll',onScroll,{passive:true});
+    onScroll();
+  })();
+</script>
 </body>
 </html>
